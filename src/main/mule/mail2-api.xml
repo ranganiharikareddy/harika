@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="0c2b466a-dd03-43de-acf1-feb40c06ebb3" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="52ca9565-cf74-4e8d-8917-10a520d8972b" />
+	<email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="94470509-3fb4-4743-b02a-372bedc5578c" >
+		<email:smtp-connection host="smtp.gmail.com" port="587" user="ranganiharikareddy@gmail.com" password="mdebfmyoeijldvse">
+			<email:properties >
+				<email:property key="mail.smtp.starttls.enable" value="true" />
+			</email:properties>
+		</email:smtp-connection>
+	</email:smtp-config>
+	<flow name="mail2-apiFlow" doc:id="941a7b0b-7bff-41bd-9773-4ea1624bc20b" >
+		<http:listener doc:name="Listener" doc:id="2718a91d-3222-4d73-8c52-84d7c71fae01" config-ref="HTTP_Listener_config" path="/mail"/>
+		<file:read doc:name="Read" doc:id="a205b662-f62c-498a-adad-c140cdaccff4" config-ref="File_Config" path="C:\Users\ADMIN\Desktop\harika.csv"/>
+		<email:send doc:name="Send" doc:id="beb19be1-dba6-45d2-a03b-077b8efaf402" config-ref="Email_SMTP" fromAddress="ranganiharikareddy@gmail.com">
+			<email:to-addresses >
+				<email:to-address value="ranganikondareddy749@gmail.com" />
+			</email:to-addresses>
+			<email:body contentTransferEncoding="Quoted-Printable" />
+			<email:attachments ><![CDATA[#[{
+"attachment.csv":payload
+}]]]></email:attachments>
+		</email:send>
+		<set-payload value="payload" doc:name="Set Payload" doc:id="89c2c0c1-5616-40da-9b47-7b98fe711b8d" />
+	</flow>
+</mule>
